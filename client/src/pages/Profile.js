@@ -13,6 +13,8 @@ export default function Profile() {
       variables: {username: userParam},
     }
   );
+  if (!userParam && !Auth.isLoggedIn()) return <Redirect to="/" />;
+
   if (loading) return <div>Loading...</div>;
   const profile = data?.myProfile || data?.profile || {};
   const isProfileOwner =

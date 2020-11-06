@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {NavLink} from 'react-router-dom';
+import {Link, NavLink} from 'react-router-dom';
 
 import Auth from 'utils/auth';
 
@@ -36,7 +36,7 @@ export default function Navigation({pages, authService}) {
         </ul>
         {isLoggedIn ? (
           <>
-            <button>Profile</button>
+            <Link to="/profile">Profile</Link>
             <button onClick={logOut}>Logout</button>
           </>
         ) : (
