@@ -1,0 +1,50 @@
+.Modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.75);
+
+  .container {
+    margin-top: 10%;
+    width: 45%;
+    border: 2px solid black;
+    background-color: rgba(255, 255, 255, 0.75);
+
+    header {
+      background-color: black;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      span {
+        font-size: x-large;
+        font-weight: bold;
+        padding: 0.25em;
+      }
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      div {
+        display: flex;
+        padding-top: 1em;
+        padding-bottom: 1em;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+        label {
+          width: 15%;
+          text-align: right;
+          padding-right: 0.25em;
+        }
+        input {
+          flex-grow: 1;
+        }
+      }
+    }
+  }
+}
