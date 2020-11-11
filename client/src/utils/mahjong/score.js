@@ -215,11 +215,11 @@ export function scoreMove(tiles, discard, seenTiles) {
     liveTiles
   );
 
-  if (playerResults.isTenpai)
+  if (playerResults.isTenpai || playerResults.shanten === 0)
     return {gameOver: true, ukeire: playerResults.ukeire};
   else if (playerResults.shanten > idealResults.shanten)
-    return {badMove: 'SHANTEN', playerResults, idealResults};
+    return {badMove: 'SHANTEN', player: playerResults, ideal: idealResults};
   else if (playerResults.ukeire < idealResults.ukeire)
-    return {badMove: 'UKEIRE', playerResults, idealResults};
-  else return {goodMove: true, playerResults, idealResults};
+    return {badMove: 'UKEIRE', player: playerResults, ideal: idealResults};
+  else return {badMove: false, player: playerResults, ideal: idealResults};
 }

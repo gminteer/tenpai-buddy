@@ -1,18 +1,18 @@
 import {createSlice} from '@reduxjs/toolkit';
 
-const initialState = 42;
+const initialState = [];
 
 const reducers = {
-  change(state, {payload}) {
-    return payload;
+  addScore(state, {payload}) {
+    state.push(payload);
   },
 };
 
 const slice = createSlice({
-  name: 'slice',
+  name: 'scores',
   initialState,
   reducers,
 });
 
-export const {change} = slice.actions;
+export const {addScore} = slice.actions;
 export default slice.reducer;
