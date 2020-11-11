@@ -2,14 +2,23 @@
   .seenTiles {
     display: flex;
     flex-wrap: wrap;
+
+    .tileCounter {
+      display: flex;
+      align-items: flex-end;
+      padding: 0.3em;
+    }
   }
+
   .moves,
   .hand {
     display: flex;
     flex-wrap: wrap;
+
     .discard {
       border: 2px solid red;
     }
+
     .drawn {
       border: 2px solid green;
     }

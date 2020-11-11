@@ -1,92 +1,85 @@
-import {tile, hand} from './helper.js';
-
-const matchers = {
-  triplet(tiles, index) {
-    if (hand.count(tiles, index) >= 3) return [index, index, index];
-    else return null;
-  },
-  sequence(tiles, index) {
-    if (
-      index + 2 < 30 &&
-      hand.count(tiles, index) &&
-      hand.count(tiles, index + 1) &&
-      hand.count(tiles, index + 2)
-    )
-      return [index, index + 1, index + 2];
-    else return null;
-  },
-  pair(tiles, index) {
-    if (hand.count(tiles, index) === 2) return [index, index];
-    else return null;
-  },
-  insideWait(tiles, index) {
-    if (
-      index + 1 < 30 &&
-      hand.count(tiles, index) &&
-      hand.count(tiles, index + 1)
-    )
-      return [index, index + 1];
-    else return null;
-  },
-  outsideWait(tiles, index) {
-    if (
-      index + 2 < 30 &&
-      hand.count(tiles, index) &&
-      hand.count(tiles, index + 2)
-    )
-      return [index, index + 2];
-    else return null;
-  },
-};
+import {tile, hand, Counter} from './helper';
+import matchers from './matchers';
 
 const BASE_SHANTEN = 8; // hand is 8 draws away from tenpai at worst
-function calcShanten(matches) {
-  return matches.reduce((acc, cur) => acc - (cur.length - 1), BASE_SHANTEN);
-}
 
-function calcUkeire(matches) {
-  // TODO: track live tiles
-  const matchUkeire = matches.reduce((acc, cur) => {
-    if (cur.length === 2) {
-      const tileDelta = Math.abs((cur[0] % 40) - (cur[1] % 40));
-      switch (tileDelta) {
-        case 0: // pair
-          return acc + 2;
-        case 1: // two adjacent
-          if (
-            [1, 9].includes(tile.value(cur[0])) ||
-            [1, 9].includes(tile.value(cur[1]))
-          )
-            // it's on an edge
-            return acc + 4;
-          else return acc + 8;
-        case 2: // outside draw
-          return acc + 4;
-        default:
-          throw new Error("this shouldn't happen");
+function calcMatchUkeire(match, liveTiles) {
+  // assumes match is sorted in tileIndexOrder
+  if (match.length === 2) {
+    const tileDelta = Math.abs((match[0] % 40) - (match[1] % 40));
+    switch (tileDelta) {
+      case 0: // pair
+        return {match, ukeire: liveTiles[match[0] % 40], isPair: true};
+      case 1: {
+        // two adjacent
+        if (tile.value(match[0]) === 1)
+          return {match, ukeire: liveTiles[(match[0] % 40) + 2]};
+        else if (tile.value(match[1]) === 9)
+          return {match, ukeire: liveTiles[(match[0] % 40) - 1]};
+        else
+          return {
+            match,
+            ukeire:
+              liveTiles[(match[0] % 40) - 1] + liveTiles[(match[1] % 40) + 1],
+          };
+      }
+      case 2: {
+        // inside draw
+        return {match, ukeire: liveTiles[(match[0] % 40) + 1]};
+      }
+      default: {
+        throw new Error("This shouldn't happen.");
       }
     }
-    if (cur.length !== 3) throw new Error("this shouldn't happen");
-    return acc;
-  }, 0);
-  const singles = 5 - matches.length;
-  if (singles) return matchUkeire + singles * 8;
-  else return matchUkeire;
+  }
+  if (match.length !== 3) throw new Error("This shouldn't happen.");
+  return {match, ukeire: 0, isComplete: true};
 }
 
-// REFACTOR: this is not efficient at all
-// (if I wrote it right) it just walks down
-// every possible permutation of interpreting the given hand
-// and returns the best score found
-export function findBestScore(tiles) {
+function calcLoneUkeire(tileId, liveTiles, pairCount, matchCount) {
+  const idx = tileId % 40;
+  if (pairCount === 0 && matchCount === 4)
+    return {tile: tileId, ukeire: liveTiles[idx]};
+  if (idx < 30) {
+    switch (tile.value(idx)) {
+      case 1:
+        return {tile: tileId, ukeire: liveTiles[idx] + liveTiles[idx + 1]};
+      case 9:
+        return {tile: tileId, ukeire: liveTiles[idx - 1] + liveTiles[idx]};
+      default:
+        return {
+          tile: tileId,
+          ukeire: liveTiles[idx - 1] + liveTiles[idx] + liveTiles[idx + 1],
+        };
+    }
+  } else {
+    return {tile: tileId, ukeire: liveTiles[idx]};
+  }
+}
+
+function calcShanten(matches) {
+  return matches.reduce(
+    (acc, cur) => acc - (cur.match.length - 1),
+    BASE_SHANTEN
+  );
+}
+
+// REFACTOR: this is still probably not that efficient
+// compute and score every possible hand interpretation
+// then return the best score
+export function findBestScore(tiles, liveTiles) {
   let bestHand = [];
   let bestShanten = BASE_SHANTEN;
   let bestUkeire = 0;
-  let unmatched = [];
+  let bestUnmatched = [];
+  let bestWorstTile = null;
+  let isTenpai = false;
 
-  function interpretHand(tiles, acc = []) {
+  function interpretHand(tiles, liveTiles, acc = [], i = 1) {
     // loop through possible tile indexes
-    for (let i = 1; i < 38; i++) {
+    for (i; i < 38; i++) {
+      // skip invalid indexes
+      if (!i % 10) continue;
       // copy incoming hand
       const tilesCopy = [...tiles];
       // try each matcher
@@ -99,63 +92,134 @@ export function findBestScore(tiles) {
             matchTiles.push(hand.popAt(tilesCopy, tileIndex));
           });
 
+          // quick sanity check
           if (
             matchTiles.includes(undefined) ||
             matchRange.length !== matchTiles.length
           )
-            // sanity check
             throw new Error('matcher is fubar');
 
-          // add match to accumulator
-          const matches = [...acc, matchTiles];
-          const matchShanten = calcShanten(matches);
-          const matchUkeire = calcUkeire(matches);
+          const scoredMatch = calcMatchUkeire(matchTiles, liveTiles);
+
+          let matches = [];
+          let unmatched = [...tilesCopy];
+          const pairCount = acc.reduce(
+            (total, cur) => (cur.isPair ? total + 1 : total),
+            0
+          );
+
+          if (acc.length >= 5) {
+            // drop worst match if we already have 5
+            const worseMatchIdx = acc.findIndex(
+              (matchObj) =>
+                matchObj.match.length === 2 &&
+                // pairs are worst only if we already have one
+                matchObj.ukeire < scoredMatch.ukeire &&
+                (!matchObj.isPair || pairCount > 1)
+            );
+            if (worseMatchIdx >= 0) {
+              matches = [...acc];
+              const dropped = matches.splice(worseMatchIdx, 1, scoredMatch)[0];
+              unmatched.push(...dropped.match);
+            } else {
+              matches = acc;
+            }
+          } else {
+            // otherwise just append it to the list of matches
+            matches = [...acc, calcMatchUkeire(matchTiles, liveTiles)];
+          }
+
+          const shanten = calcShanten(matches);
+
+          // if there are five matches and hand isn't tenpai drop worst match
+          if (matches.length === 5) {
+            if (shanten < 1) {
+              isTenpai = true;
+            } else {
+              // drop match with worst ukeire that isn't complete, hanging on to at least one pair
+              const potentialDrops = matches
+                .filter((match) => !match.isComplete)
+                .sort(({ukeire: a}, {ukeire: b}) => b - a);
+              const dropped = potentialDrops
+                .splice(
+                  potentialDrops.indexOf((match) => match.isPair),
+                  1
+                )
+                .pop();
+              matches.splice(
+                matches.indexOf((match) => match === dropped),
+                1
+              );
+              unmatched.push(...dropped.match);
+            }
+          }
+          const matchUkeire = matches.reduce(
+            (acc, {ukeire}) => acc + ukeire,
+            0
+          );
+          let worstTile = null;
+          const unmatchedUkeire = unmatched
+            .map((tileId) =>
+              calcLoneUkeire(tileId, liveTiles, pairCount, matches.length)
+            )
+            .sort(({ukeire: a}, {ukeire: b}) => b - a);
+          worstTile = unmatchedUkeire.pop();
+          let ukeire = unmatchedUkeire.reduce(
+            (acc, {ukeire}) => acc + ukeire,
+            matchUkeire
+          );
+
+          const tileCount = matches.reduce(
+            (total, cur) => total + cur.match.length,
+            unmatched.length
+          );
+          // if evaluating a 13 tile hand count ukeire on the worst tile
+          if (tileCount < 14) ukeire += worstTile?.ukeire || 0;
+
+          // update best
           if (
-            matchShanten < bestShanten ||
-            (matchShanten === bestShanten && matchUkeire > bestUkeire)
+            shanten < bestShanten ||
+            (shanten === bestShanten && ukeire > bestUkeire)
           ) {
             bestHand = matches;
-            bestShanten = matchShanten;
-            bestUkeire = matchUkeire;
-            unmatched = [...tilesCopy];
+            bestShanten = shanten;
+            bestUkeire = ukeire;
+            bestUnmatched = unmatched;
+            bestWorstTile = worstTile;
           }
-          // branch for match
-          interpretHand(tilesCopy, matches);
+
+          // branch on match (incrementing i to skip redundant branching)
+          if (!isTenpai) interpretHand(tilesCopy, liveTiles, matches, i + 1);
         }
       }
     }
   }
-
-  interpretHand(tiles);
-  return {hand: bestHand, shanten: bestShanten, ukeire: bestUkeire, unmatched};
+  interpretHand(tiles, liveTiles);
+  return {
+    hand: bestHand,
+    shanten: bestShanten,
+    ukeire: bestUkeire,
+    unmatched: bestUnmatched,
+    worstTile: bestWorstTile,
+    isTenpai,
+  };
 }
 
-// this can also probably be optimized
-export function findDrops(tiles) {
-  let best = null;
-  for (let i = 0; i < 14; i++) {
-    const tilesCopy = [...tiles];
-    tilesCopy.splice(i, 1);
-    const result = findBestScore(tilesCopy);
-    if (
-      !best ||
-      result.shanten < best.shanten ||
-      (result.shanten === best.shanten && result.ukeire > best.ukeire)
-    )
-      best = result;
-  }
-  return best;
-}
+export function scoreMove(tiles, discard, seenTiles) {
+  const liveTiles = new Counter(4);
+  seenTiles.forEach((tile, idx) => (liveTiles[idx] -= tile.length));
 
-export function scoreMove(tiles, discard) {
-  const drops = findDrops(tiles);
-  if (drops.unmatched.includes(discard)) {
-    console.log('Check ukeire here');
-  } else {
-    console.log(
-      `Bad move? Discarded: "${discard}", unmatched: `,
-      drops.unmatched
-    );
-  }
-  return drops;
+  const idealResults = findBestScore(tiles, liveTiles);
+  const playerResults = findBestScore(
+    tiles.filter((tile) => tile !== discard),
+    liveTiles
+  );
+
+  if (playerResults.isTenpai)
+    return {gameOver: true, ukeire: playerResults.ukeire};
+  else if (playerResults.shanten > idealResults.shanten)
+    return {badMove: 'SHANTEN', playerResults, idealResults};
+  else if (playerResults.ukeire < idealResults.ukeire)
+    return {badMove: 'UKEIRE', playerResults, idealResults};
+  else return {goodMove: true, playerResults, idealResults};
 }

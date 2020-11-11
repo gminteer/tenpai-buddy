@@ -12,16 +12,17 @@ import styles from './Game.module.scss';
 export default function Home() {
   const game = useSelector((state) => state.game);
   const seenTiles = byIndex(game.seenTiles);
-  const hand = sortedCopy(game.hand);
 
   const dispatch = useDispatch();
   function discard(id) {
-    const results = scoreMove(hand, id);
-    console.log(results);
+    const results = scoreMove(
+      sortedCopy([...game.hand, game.drawnTile]),
+      id,
+      seenTiles
+    );
     dispatch(discardTile(id));
     dispatch(drawTile());
   }
-  console.log(hand);
   return (
     <main className={styles.Game}>
       <h2>Dora Indicator</h2>
@@ -29,15 +30,15 @@ export default function Home() {
       <h2>Seen Tiles</h2>
       <div className={styles.seenTiles}>
         {seenTiles.map((tile, idx) => (
-          <div>
-            <Tile id={idx} />
+          <div className={styles.tileCounter}>
+            <Tile key={tile} id={idx} />
             {tile.length > 1 && <span>x{tile.length}</span>}
           </div>
         ))}
       </div>
       <h2>Hand</h2>
       <div className={styles.hand}>
-        <TileGroup tiles={hand} clickHandler={discard} />
+        <TileGroup tiles={sortedCopy(game.hand)} clickHandler={discard} />
         <div className={styles.drawn}>
           <Tile
             id={game.drawnTile}
