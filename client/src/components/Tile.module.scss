@@ -1,0 +1,13 @@
+$tile-background: url('../assets/tiles/front.svg');
+
+.Tile {
+  height: 4em;
+  width: 3em;
+  background-image: $tile-background;
+  background-size: cover;
+  padding: 0.2em;
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}

@@ -13,6 +13,7 @@ import Header from './components/Header';
 
 const HighScores = React.lazy(() => import('./pages/HighScores'));
 const Profile = React.lazy(() => import('./pages/Profile'));
+const Game = React.lazy(() => import('./pages/Game'));
 
 const client = new ApolloClient({
   request(operation) {
@@ -29,11 +30,14 @@ export default function App() {
     <ReduxProvider store={store}>
       <ApolloProvider client={client}>
         <Router basename={process.env.PUBLIC_URL}>
-          <Header pages={['highscores']} authService={authService} />
+          <Header pages={['game', 'highscores']} authService={authService} />
           <Suspense fallback={<div>Now loading...</div>}>
             <Switch>
               <Route exact path="/">
                 <Home />
+              </Route>
+              <Route exact path="/game">
+                <Game />
               </Route>
               <Route exact path="/highscores">
                 <HighScores />

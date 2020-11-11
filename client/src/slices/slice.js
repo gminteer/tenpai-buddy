@@ -8,11 +8,11 @@ const reducers = {
   },
 };
 
-const sliceSlice = createSlice({
+const slice = createSlice({
   name: 'slice',
   initialState,
   reducers,
 });
 
-export const {change} = sliceSlice.actions;
-export default sliceSlice.reducer;
+export const {change} = slice.actions;
+export default slice.reducer;
