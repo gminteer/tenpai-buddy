@@ -2,7 +2,7 @@ import React from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 
 import {sortedCopy, byIndex} from 'utils/mahjong/helper';
-import {findDrops, findBestScore} from 'utils/mahjong/score';
+import {scoreMove} from 'utils/mahjong/score';
 import {discardTile, drawTile} from 'slices/game';
 import TileGroup from 'components/TileGroup';
 import Tile from 'components/Tile';
@@ -16,11 +16,9 @@ export default function Home() {
 
   const dispatch = useDispatch();
   function discard(id) {
-    const bestScore = findDrops(hand);
-    console.log(bestScore);
+    const results = scoreMove(hand, id);
+    console.log(results);
     dispatch(discardTile(id));
-    const userScore = findBestScore(hand);
-    console.log(userScore);
     dispatch(drawTile());
   }
   console.log(hand);
@@ -38,12 +36,22 @@ export default function Home() {
         ))}
       </div>
       <h2>Hand</h2>
-      <TileGroup tiles={hand} clickHandler={discard} />
+      <div className={styles.hand}>
+        <TileGroup tiles={hand} clickHandler={discard} />
+        <div className={styles.drawn}>
+          <Tile
+            id={game.drawnTile}
+            clickHandler={() => discard(game.drawnTile)}
+          />
+        </div>
+      </div>
       <h2>Moves</h2>
       {game.moves.map(({hand, discard}) => (
-        <div>
-          <TileGroup tiles={hand} />
-          <Tile id={discard} />
+        <div className={styles.moves}>
+          <TileGroup tiles={sortedCopy(hand)} />
+          <div className={styles.discard}>
+            <Tile id={discard} />
+          </div>
         </div>
       ))}
     </main>

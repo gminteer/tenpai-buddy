@@ -5,7 +5,6 @@ import Tile from './Tile';
 import styles from './TileGroup.module.scss';
 
 export default function TileGroup({tiles, clickHandler}) {
-  console.log(tiles, clickHandler);
   return (
     <div className={styles.TileGroup}>
       {tiles.map((id) => (

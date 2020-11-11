@@ -149,10 +149,13 @@ export function findDrops(tiles) {
 
 export function scoreMove(tiles, discard) {
   const drops = findDrops(tiles);
-  console.log(drops);
   if (drops.unmatched.includes(discard)) {
     console.log('Check ukeire here');
   } else {
-    console.log('Bad move?');
+    console.log(
+      `Bad move? Discarded: "${discard}", unmatched: `,
+      drops.unmatched
+    );
   }
+  return drops;
 }

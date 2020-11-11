@@ -13,24 +13,28 @@ function initialState() {
     deadTiles.push(wall.pop());
   }
   const hand = [];
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < 13; i++) {
     hand.push(wall.pop());
   }
+  const drawnTile = wall.pop();
   const seenTiles = [];
   seenTiles.push(doraIndicators[0]);
-  seenTiles.push(...hand);
+  seenTiles.push(...hand, drawnTile);
   const moves = [];
-  return {wall, doraIndicators, deadTiles, hand, seenTiles, moves};
+  return {wall, doraIndicators, deadTiles, hand, drawnTile, seenTiles, moves};
 }
 
 const reducers = {
   discardTile(state, {payload}) {
-    state.hand = state.hand.filter((tile) => tile !== payload);
+    if (payload !== state.drawnTile) {
+      state.hand = state.hand.filter((tile) => tile !== payload);
+      state.hand.push(state.drawnTile);
+    }
     state.moves.push({discard: payload, hand: [...state.hand]});
   },
   drawTile(state) {
     const newTile = state.wall.pop();
-    state.hand.push(newTile);
+    state.drawnTile = newTile;
     state.seenTiles.push(newTile);
   },
 };
