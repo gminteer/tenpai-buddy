@@ -86,7 +86,7 @@ module.exports = ({Account, Profile, Score}, signToken) => ({
         profile: context.user.profile,
       });
       const profile = await Profile.findById(context.user.profile);
-      return {...score, profile};
+      return {...scoreData, profile};
     },
   },
 });

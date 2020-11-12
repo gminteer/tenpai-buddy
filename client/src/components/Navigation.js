@@ -19,7 +19,6 @@ export default function Navigation({pages, authService}) {
     Auth.logout();
     window.location.reload();
   };
-  console.log(isLoggedIn);
   return (
     <>
       {showLoginForm && <Login toggle={toggleLoginForm} />}
