@@ -63,7 +63,7 @@ export default function Game() {
     <main className={styles.Game}>
       {gameOver && (
         <GameOver
-          toggle={() => <Redirect to="/highscores" />}
+          toggle={() => window.location.assign('/highscores')}
           isTenpai={isTenpai}
           ukeire={game.ukeire}
           moveCount={game.moves.length}
