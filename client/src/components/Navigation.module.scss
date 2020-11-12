@@ -1,3 +1,15 @@
 .Navigation {
-  color: red;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+
+  a {
+    padding-left: 1em;
+    padding-right: 1em;
+    text-transform: capitalize;
+  }
+
+  button {
+    border: none;
+  }
 }
