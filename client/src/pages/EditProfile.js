@@ -49,7 +49,7 @@ export default function EditProfile() {
             id="username"
             name="username"
             onChange={handleChange}
-            value={formState?.username || 'Loading...'}
+            value={formState?.username || ''}
           />
         </div>
         <button type="submit">Submit</button>
