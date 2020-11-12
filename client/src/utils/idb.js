@@ -24,7 +24,7 @@ export default function idbPromise(storeName, method, object) {
         }
         case 'get': {
           const all = store.getAll();
-          all.onsucess = () => resolve(all.result);
+          all.onsuccess = () => resolve(all.result);
           break;
         }
         case 'delete': {
