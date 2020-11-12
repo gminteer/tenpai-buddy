@@ -19,7 +19,7 @@ export default function HighScores() {
       dispatch(bulkUpdate(data.scores));
     } else if (!loading) {
       idbPromise('scores', 'get').then((scores) =>
-        dispatch(bulkUpdate(data.scores))
+        dispatch(bulkUpdate(scores))
       );
     }
   });
