@@ -1,19 +1,44 @@
-import React from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {addScore} from 'slices/scores';
+import React, {useEffect} from 'react';
+import {useDispatch} from 'react-redux';
+import {useMutation} from '@apollo/react-hooks';
 
 import Auth from 'utils/auth';
+import idbPromise from 'utils/idb';
+import {ADD_SCORE} from 'utils/mutations';
+import {addScore} from 'slices/scores';
 
 import Modal from './Modal';
 
-export default function GameOver({toggle, isTenpai, ukeire, moveCount}) {
-  const scores = useSelector((state) => state.scores);
+export default function GameOver({
+  toggle,
+  isTenpai,
+  ukeire,
+  moveCount,
+  efficiency,
+}) {
+  const [addScoreMutation, {error}] = useMutation(ADD_SCORE);
   const dispatch = useDispatch();
-  const score = {};
-  score.profile = Auth.decodedToken().data?.profile || null;
-  score.moveCount = moveCount;
-  score.ukeire = ukeire;
-  dispatch(addScore(score));
+  useEffect(() => {
+    const score = {};
+    score.profile = Auth.decodedToken().data?.profile || null;
+    score.moveCount = moveCount;
+    score.ukeire = ukeire;
+    score.efficiency = efficiency;
+    async function submitScore() {
+      try {
+        const {profile, ...scoreVariables} = score;
+        const {data} = await addScoreMutation({
+          variables: {score: scoreVariables},
+        });
+        console.log(data);
+        idbPromise('scores', 'put', {...score, _id: data.addScore._id});
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    dispatch(addScore(score));
+    submitScore();
+  }, [addScoreMutation, dispatch, moveCount, ukeire, efficiency]);
 
   return (
     <Modal toggle={toggle} title="Game Over">

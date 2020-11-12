@@ -36,3 +36,17 @@ export const UPDATE_PROFILE = gql`
     }
   }
 `;
+
+export const ADD_SCORE = gql`
+  mutation addScore($score: ScoreInput!) {
+    addScore(score: $score) {
+      _id
+      profile {
+        _id
+      }
+      moveCount
+      ukeire
+      efficiency
+    }
+  }
+`;

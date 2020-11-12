@@ -1,9 +1,11 @@
 import React from 'react';
 
+import styles from './Home.module.scss';
+
 export default function Home() {
   return (
-    <main>
-      <div>
+    <main className={styles.Home}>
+      <div className={styles.about}>
         <h2>About</h2>
         <p>
           Tenpai Buddy is a game / practice drill for improving your Riichi

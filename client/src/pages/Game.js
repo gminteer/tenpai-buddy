@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 
-import Auth from 'utils/auth';
 import {sortedCopy, byIndex} from 'utils/mahjong/helper';
 import {scoreMove} from 'utils/mahjong/score';
 import {discardTile, drawTile, reset} from 'slices/game';
@@ -13,9 +12,9 @@ import GameOver from 'components/modals/GameOver';
 import styles from './Game.module.scss';
 
 export default function Game() {
-  console.log(Auth.decodedToken());
   const [gameOver, setGameOver] = useState(false);
   const [isTenpai, setIsTenpai] = useState(false);
+  const [efficiency, setEfficiency] = useState(0);
   const toggleGameOver = () => setGameOver(!gameOver);
 
   const game = useSelector((state) => state.game);
@@ -51,6 +50,7 @@ export default function Game() {
         efficiency,
       })
     );
+    setEfficiency(efficiency);
     if (game.wall.length) {
       dispatch(drawTile());
     } else {
@@ -64,15 +64,31 @@ export default function Game() {
         <GameOver
           toggle={() => {
             toggleGameOver();
-            dispatch(reset());
+            // dispatch(reset());
           }}
           isTenpai={isTenpai}
           ukeire={game.ukeire}
           moveCount={game.moves.length}
+          efficiency={efficiency}
         />
       )}
-      <h2>Dora</h2>
-      <Tile id={game.doraIndicators[0]} />
+      <header>
+        <div className={styles.handInfo}>
+          <p>
+            {game.shanten !== null && <span>{game.shanten} Shanten </span>}
+            {game.ukeire !== null && <span>{game.ukeire} Ukeire </span>}
+            {game.efficiency !== null && (
+              <span>{game.efficiency}% efficient</span>
+            )}
+          </p>
+        </div>
+        <div className={styles.dora}>
+          <TileGroup
+            tiles={[game.doraIndicators[0], 'back', 'back', 'back', 'back']}
+          />
+          <h2>Dora</h2>
+        </div>
+      </header>
       <h2>Seen Tiles</h2>
       <div className={styles.seenTiles}>
         {seenTiles.map((tile, idx) => (
@@ -82,40 +98,36 @@ export default function Game() {
           </div>
         ))}
       </div>
-      <header className={styles.handInfo}>
-        <h2>Hand</h2>
-        <p>
-          {game.shanten !== null && <span>{game.shanten} Shanten </span>}
-          {game.ukeire !== null && <span>{game.ukeire} Ukeire </span>}
-          {game.efficiency !== null && (
-            <span>{game.efficiency}% efficient</span>
-          )}
-        </p>
-      </header>
+      <section className={styles.moves}>
+        <h2>Moves</h2>
+        {moves.map((move, idx) => (
+          <div key={idx} className={styles.move}>
+            <TileGroup tiles={sortedCopy(move.hand)} />
+            <div className={styles.discard}>
+              <Tile id={move.discard} />
+            </div>
+            <div>
+              <p>
+                ({move.shanten} Shanten, {move.ukeire} Ukeire)
+              </p>
+              <p>{move.efficiency}% efficient</p>
+            </div>
+          </div>
+        ))}
+      </section>
       <section className={styles.hand}>
-        <TileGroup tiles={sortedCopy(game.hand)} clickHandler={discard} />
-        <div className={styles.drawn}>
-          <Tile
-            id={game.drawnTile}
-            clickHandler={() => discard(game.drawnTile)}
-          />
+        <h2>Your Hand</h2>
+        <aside>click / tap to discard</aside>
+        <div className={styles.tileSet}>
+          <TileGroup tiles={sortedCopy(game.hand)} clickHandler={discard} />
+          <div className={styles.drawn}>
+            <Tile
+              id={game.drawnTile}
+              clickHandler={() => discard(game.drawnTile)}
+            />
+          </div>
         </div>
       </section>
-      <h2>Moves</h2>
-      {moves.map((move, idx) => (
-        <div className={styles.moves} key={idx}>
-          <TileGroup tiles={sortedCopy(move.hand)} />
-          <div className={styles.discard}>
-            <Tile id={move.discard} />
-          </div>
-          <div>
-            <p>
-              ({move.shanten} Shanten, {move.ukeire} Ukeire)
-            </p>
-            <p>{move.efficiency}% efficient</p>
-          </div>
-        </div>
-      ))}
     </main>
   );
 }
