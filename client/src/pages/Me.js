@@ -35,14 +35,14 @@ export default function Me() {
           <h3>Profile</h3>
           <h4>Username</h4>
           <span>{me.profile.username}</span>
-          <Link to="/profile/edit">Edit Profile</Link>
+          <Link to="/editProfile">Edit Profile</Link>
         </div>
       ) : (
         <div>
           <h3>No profile created</h3>
           <p>
             You haven't created a profile yet,{' '}
-            <Link to="/profile/edit">click here</Link> to create one. Creating a
+            <Link to="/editProfile">click here</Link> to create one. Creating a
             profile will unlock posting high scores, with more features coming
             soon!
           </p>

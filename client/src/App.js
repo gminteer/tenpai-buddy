@@ -41,7 +41,7 @@ export default function App() {
               <Route exact path="/me">
                 <Me />
               </Route>
-              <Route exact path="/profile/edit">
+              <Route exact path="/editProfile">
                 <EditProfile />
               </Route>
               <Route exact path="/profile/:username?">
