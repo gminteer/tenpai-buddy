@@ -96,6 +96,19 @@ export default function Game() {
           </div>
         ))}
       </div>
+      <section className={styles.hand}>
+        <h2>Your Hand</h2>
+        <aside>click / tap to discard</aside>
+        <div className={styles.tileSet}>
+          <TileGroup tiles={sortedCopy(game.hand)} clickHandler={discard} />
+          <div className={styles.drawn}>
+            <Tile
+              id={game.drawnTile}
+              clickHandler={() => discard(game.drawnTile)}
+            />
+          </div>
+        </div>
+      </section>
       <section className={styles.moves}>
         <h2>Moves</h2>
         {moves.map((move, idx) => (
@@ -112,19 +125,6 @@ export default function Game() {
             </div>
           </div>
         ))}
-      </section>
-      <section className={styles.hand}>
-        <h2>Your Hand</h2>
-        <aside>click / tap to discard</aside>
-        <div className={styles.tileSet}>
-          <TileGroup tiles={sortedCopy(game.hand)} clickHandler={discard} />
-          <div className={styles.drawn}>
-            <Tile
-              id={game.drawnTile}
-              clickHandler={() => discard(game.drawnTile)}
-            />
-          </div>
-        </div>
       </section>
     </main>
   );

@@ -1,12 +1,19 @@
+@import 'common.scss';
+
 .Home {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  margin-top: calc(15% - 1em);
+
   .about {
-    margin-top: 15%;
-    flex-grow: 1;
+    margin-top: 1em;
     width: 80%;
+    border: $card-border;
+    border-radius: $card-border-radius;
+    background-color: $card-background;
+    box-shadow: $shadow;
 
     h2 {
       text-align: center;
@@ -16,9 +23,17 @@
       padding: 1.5em;
     }
   }
+
+  .spacer {
+    flex-grow: 1;
+  }
+
   footer {
     width: 100%;
     display: flex;
     justify-content: space-around;
+    font-family: $sans-font;
+    background-color: $secondary;
+    padding: 1em;
   }
 }

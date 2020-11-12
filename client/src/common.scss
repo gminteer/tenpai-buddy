@@ -1,0 +1,37 @@
+$serif-font: 'EB Garamond', serif;
+$title-font: 'Pacifico', cursive;
+$sans-font: 'Roboto', sans-serif;
+
+$colors: (
+  'terra-cotta': #ed6a5a,
+  'pale-spring-bud': #f4f1bb,
+  'opal': #9bc1bc,
+  'independence': #5d576b,
+  'alabaster': #e6ebe0,
+);
+
+$background: map-get(
+  $map: $colors,
+  $key: 'alabaster',
+);
+$alt-background: map-get(
+  $map: $colors,
+  $key: 'opal',
+);
+$primary: map-get(
+  $map: $colors,
+  $key: 'independence',
+);
+$secondary: map-get(
+  $map: $colors,
+  $key: 'pale-spring-bud',
+);
+$accent: map-get(
+  $map: $colors,
+  $key: 'terra-cotta',
+);
+
+$shadow: 0.25em 0.25em 1em 0.3em rgba(0.4, 0.4, 0.4, 0.4);
+$card-background: rgba(255, 255, 255, 0.6);
+$card-border: 0.2em solid black;
+$card-border-radius: 1.25em;

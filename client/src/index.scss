@@ -1,3 +1,6 @@
+@import 'common.scss';
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond&family=Pacifico&family=Roboto:wght@500&display=swap');
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -8,12 +11,14 @@ html,
 body,
 #root {
   height: 100%;
+  font-family: $serif-font;
 }
 
 #root {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background-color: $background;
 
   main {
     display: flex;

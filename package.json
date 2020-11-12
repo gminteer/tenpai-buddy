@@ -12,8 +12,13 @@
     "heroku-postbuild": "cd client && npm run build"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "repository": "github:gminteer/tenpai-buddy",
+  "author": "Greg Minteer <gminteer@gmail.com> (https://gminteer.github.io)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/gminteer/tenpai-buddy/issues"
+  },
+  "homepage": "https://github.com/gminteer/tenpai-buddy#readme",
   "devDependencies": {
     "concurrently": "^5.3.0",
     "prettier": "^2.1.2"

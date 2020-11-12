@@ -8,6 +8,8 @@ import {UPDATE_PROFILE} from 'utils/mutations';
 import {GET_MYPROFILE} from 'utils/queries';
 import {update} from 'slices/me';
 
+import styles from './EditProfile.module.scss';
+
 export default function EditProfile() {
   const me = useSelector((state) => state.me);
   const dispatch = useDispatch();
@@ -39,7 +41,7 @@ export default function EditProfile() {
     }
   }
   return (
-    <main>
+    <main className={styles.EditProfile}>
       <form id="profile" name="profile" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="username">Username</label>

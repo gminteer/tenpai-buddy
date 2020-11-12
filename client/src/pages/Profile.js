@@ -5,6 +5,8 @@ import {useQuery} from '@apollo/react-hooks';
 import Auth from 'utils/auth';
 import {GET_PROFILE} from 'utils/queries';
 
+import styles from './Profile.module.scss';
+
 export default function Profile() {
   const {username: userParam} = useParams();
   const {loading, data} = useQuery(GET_PROFILE, {
@@ -31,7 +33,7 @@ export default function Profile() {
     );
 
   return (
-    <main>
+    <main className={styles.Profile}>
       <h2>{profile.username}</h2>
       <button>Edit Profile</button>
     </main>

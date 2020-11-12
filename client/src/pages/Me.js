@@ -30,10 +30,9 @@ export default function Me() {
     <main className={styles.Me}>
       <h2>{me.email}</h2>
       {me.profile ? (
-        <div>
-          <h3>Profile</h3>
-          <h4>Username</h4>
-          <span>{me.profile.username}</span>
+        <div className={styles.profile}>
+          <h3>Your Profile</h3>
+          <p>Username: {me.profile.username}</p>
           <Link to="/editProfile">Edit Profile</Link>
         </div>
       ) : (

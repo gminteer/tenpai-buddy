@@ -1,15 +1,26 @@
+@import 'common.scss';
+
 .Navigation {
   display: flex;
   justify-content: space-around;
   align-items: flex-end;
 
   a {
-    padding-left: 1em;
-    padding-right: 1em;
     text-transform: capitalize;
   }
 
   button {
     border: none;
+    background: none;
+    cursor: pointer;
+  }
+
+  a,
+  button {
+    padding-left: 1em;
+    padding-right: 1em;
+    font-family: $sans-font;
+    font-size: 1.2em;
+    text-decoration: underline;
   }
 }

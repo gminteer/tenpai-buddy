@@ -37,14 +37,16 @@ export default function Home() {
           <a href="https://creativecommons.org/licenses/by/4.0/">CC BY-4.0</a>
         </p>
       </div>
+      <div className={styles.spacer} />
       <footer>
-        <span>© 2020 gminteer@gmail.com</span>
+        <span>
+          © 2020 <a href="https://gminteer.github.io">gminteer</a>
+        </span>
         <span>
           <a href="https://github.com/gminteer/tenpai-buddy">
             Check out the source code here
           </a>
         </span>
-        <span>Powered by &lt;3 emojis</span>
       </footer>
     </main>
   );

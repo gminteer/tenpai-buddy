@@ -1,5 +1,17 @@
+@import 'common.scss';
+
 .Header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  background-color: $alt-background;
+
+  h1 {
+    font-family: $title-font;
+  }
+
+  a,
+  a:visited {
+    color: black;
+  }
 }
