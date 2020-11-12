@@ -9,7 +9,7 @@ export default function Modal({toggle, title, children}) {
         <header>
           <span>{title}</span>
           <button className={styles.close} onClick={toggle}>
-            close
+            ✖
           </button>
         </header>
         {children}

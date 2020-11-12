@@ -189,7 +189,7 @@ export function findBestScore(tiles, liveTiles) {
           }
 
           // branch on match (incrementing i to skip redundant branching)
-          if (!isTenpai) interpretHand(tilesCopy, liveTiles, matches, i + 1);
+          interpretHand(tilesCopy, liveTiles, matches, i + 1);
         }
       }
     }

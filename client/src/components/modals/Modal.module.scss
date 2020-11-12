@@ -20,10 +20,17 @@
       color: white;
       display: flex;
       justify-content: space-between;
+      align-items: center;
       span {
         font-size: x-large;
         font-weight: bold;
         padding: 0.25em;
+      }
+
+      button {
+        padding: 0.25em;
+        margin-right: 0.25em;
+        height: fit-content;
       }
     }
     form {
