@@ -38,7 +38,7 @@ export default function HighScores() {
         <tbody>
           {scores.map((score) => (
             <tr key={score._id}>
-              <td>{score.profile.username}</td>
+              <td>{score.profile?.username || 'Freed Jyanshi'}</td>
               <td>{score.moveCount}</td>
               <td>{score.efficiency}</td>
               <td>{score.ukeire}</td>

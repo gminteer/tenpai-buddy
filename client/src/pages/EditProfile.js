@@ -1,19 +1,22 @@
 import React, {useState, useEffect} from 'react';
 import {Redirect} from 'react-router-dom';
 import {useMutation, useQuery} from '@apollo/react-hooks';
+import {useSelector, useDispatch} from 'react-redux';
 
 import Auth from 'utils/auth';
 import {UPDATE_PROFILE} from 'utils/mutations';
 import {GET_MYPROFILE} from 'utils/queries';
+import {update} from 'slices/me';
 
 export default function EditProfile() {
+  const me = useSelector((state) => state.me);
+  const dispatch = useDispatch();
   const [formState, setFormState] = useState({username: ''});
   const {loading, data} = useQuery(GET_MYPROFILE);
   const [updateProfile, {error}] = useMutation(UPDATE_PROFILE);
 
   useEffect(() => {
     if (data) setFormState(data.myProfile);
-    console.log(data);
   }, [data]);
 
   if (!Auth.isLoggedIn()) return <Redirect to="/" />;
@@ -28,7 +31,8 @@ export default function EditProfile() {
     event.preventDefault();
     const {username} = formState;
     try {
-      await updateProfile({variables: {profile: {username}}});
+      const profile = await updateProfile({variables: {profile: {username}}});
+      dispatch(update({...me, profile}));
       window.location.assign('/me');
     } catch (error) {
       console.error(error);

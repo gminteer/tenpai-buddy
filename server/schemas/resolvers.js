@@ -26,6 +26,13 @@ module.exports = ({Account, Profile, Score}, signToken) => ({
       if (profile) return Score.find({profile}).populate('profile');
       else return Score.find().populate('profile');
     },
+
+    async newToken() {
+      if (!context.user) throw new AuthenticationError('Not logged in');
+      const account = await Account.findById(context.user._id);
+      const token = signToken(account);
+      return {token, account};
+    },
   },
 
   Mutation: {

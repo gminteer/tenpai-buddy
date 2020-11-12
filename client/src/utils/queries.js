@@ -13,6 +13,22 @@ export const GET_MYACCOUNT = gql`
   }
 `;
 
+export const NEW_TOKEN = gql`
+  {
+    newToken {
+      token
+      account {
+        _id
+        email
+        profile {
+          _id
+          username
+        }
+      }
+    }
+  }
+`;
+
 export const GET_MYPROFILE = gql`
   {
     myProfile {

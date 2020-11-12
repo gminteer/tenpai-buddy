@@ -44,6 +44,7 @@ module.exports = gql`
   type Query {
     accounts: [Account]
     profile(username: String!): Profile
+    newToken: Auth
     myAccount: Account
     myProfile: Profile
     scores(profile: ID): [Score]

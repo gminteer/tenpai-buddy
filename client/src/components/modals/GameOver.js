@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useMutation} from '@apollo/react-hooks';
 
 import Auth from 'utils/auth';
@@ -18,9 +18,10 @@ export default function GameOver({
 }) {
   const [addScoreMutation, {error}] = useMutation(ADD_SCORE);
   const dispatch = useDispatch();
+  const me = useSelector((state) => state.me);
   useEffect(() => {
     const score = {};
-    score.profile = Auth.decodedToken().data?.profile || null;
+    score.profile = me.profile || null;
     score.moveCount = moveCount;
     score.ukeire = ukeire;
     score.efficiency = efficiency;
