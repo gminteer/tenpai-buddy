@@ -8,6 +8,8 @@ import {GET_MYACCOUNT} from 'utils/queries';
 import {update} from 'slices/me';
 import idbPromise from 'utils/idb';
 
+import styles from './Me.module.scss';
+
 export default function Me() {
   const me = useSelector((state) => state.me);
   const dispatch = useDispatch();
@@ -26,7 +28,7 @@ export default function Me() {
 
   if (loading) return <div>Loading...</div>;
   return (
-    <main>
+    <main className={styles.Me}>
       <h2>{me.email}</h2>
       {me.profile ? (
         <div>

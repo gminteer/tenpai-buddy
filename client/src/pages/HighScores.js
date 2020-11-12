@@ -6,6 +6,8 @@ import idbPromise from 'utils/idb';
 import {GET_SCORES} from 'utils/queries';
 import {bulkUpdate} from 'slices/scores';
 
+import styles from './HighScores.module.scss';
+
 export default function HighScores() {
   const scores = useSelector((state) => state.scores);
   const dispatch = useDispatch();
@@ -24,18 +26,26 @@ export default function HighScores() {
 
   if (loading) return <div>Loading...</div>;
   return (
-    <main>
-      <h1>High Scores</h1>
-      <ol>
-        {scores.map((score) => (
-          <li key={score._id}>
-            <span>{score.profile.username}</span>
-            <span>{score.moveCount}</span>
-            <span>{score.efficiency}</span>
-            <span>{score.ukeire}</span>
-          </li>
-        ))}
-      </ol>
+    <main className={styles.HighScores}>
+      <h2>High Scores</h2>
+      <table>
+        <thead>
+          <th>User</th>
+          <th>Moves</th>
+          <th>Efficiency</th>
+          <th>Final ukeire</th>
+        </thead>
+        <tbody>
+          {scores.map((score) => (
+            <tr key={score._id}>
+              <td>{score.profile.username}</td>
+              <td>{score.moveCount}</td>
+              <td>{score.efficiency}</td>
+              <td>{score.ukeire}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </main>
   );
 }

@@ -1,0 +1,22 @@
+.HighScores {
+  display: flex;
+  flex-direction: column;
+
+  h2 {
+    margin-top: 5em;
+  }
+
+  table {
+    padding: 2.5em;
+  }
+
+  th {
+    padding: 0.5em;
+    border-bottom: 0.1em solid black;
+  }
+
+  td {
+    text-align: center;
+    padding: 0.2em;
+  }
+}
