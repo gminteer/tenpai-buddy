@@ -7,6 +7,7 @@
 // the other three copies of each tile follow the same scheme, offset by 40 for each copy
 
 const SUITS = ['m', 'p', 's'];
+const HONORS = ['east', 'south', 'west', 'north', 'white', 'green', 'red'];
 
 // validators
 export function isValidTile(id) {
@@ -39,6 +40,10 @@ export const tile = {
   },
   value(tile) {
     return tile % 40 < 30 ? tile % 10 : undefined;
+  },
+  toString(tile) {
+    if (tile < 30) return `${this.value}${this.suit}`;
+    else return HONORS[tile - 1];
   },
 };
 
