@@ -22,6 +22,7 @@ export default function Me() {
         dispatch(update(data.myAccount));
       } else if (!loading) {
         const me = await idbPromise('me', 'get');
+        console.log(me);
         dispatch(update(me));
       }
     }
