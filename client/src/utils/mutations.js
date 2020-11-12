@@ -43,6 +43,7 @@ export const ADD_SCORE = gql`
       _id
       profile {
         _id
+        username
       }
       moveCount
       ukeire

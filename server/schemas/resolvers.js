@@ -74,10 +74,12 @@ module.exports = ({Account, Profile, Score}, signToken) => ({
 
     async addScore(parent, {score: scoreData}, context) {
       if (!context.user) throw new AuthenticationError('Not logged in');
-      return Score.create({
+      const score = await Score.create({
         ...scoreData,
         profile: context.user.profile,
       });
+      const profile = await Profile.findById(context.user.profile);
+      return {...score, profile};
     },
   },
 });
