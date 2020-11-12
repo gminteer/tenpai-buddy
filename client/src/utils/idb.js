@@ -1,28 +1,21 @@
 export default function idbPromise(storeName, method, object) {
   return new Promise((resolve, reject) => {
     const request = window.indexedDB.open('tenpai-buddy', 1);
-    let db;
-    let tx;
-    let store;
 
-    request.onupgradeneeded = () => {
-      db = request.result;
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
       db.createObjectStore('scores', {keyPath: '_id'});
-      db.createObjectStore('profiles', {keyPath: '_id'});
+      db.createObjectStore('me', {keyPath: '_id'});
     };
 
-    request.onerror = (error) => {
-      console.error(`idb error: ${error.message}`);
-    };
+    request.onerror = (event) => reject(event.target.errorCode);
 
-    request.onsucess = () => {
-      db = request.result;
-      tx = db.transaction(storeName);
-      store = tx.objectStore(storeName);
+    request.onsuccess = (event) => {
+      const db = event.target.result;
+      const tx = db.transaction(storeName, 'readwrite');
+      const store = tx.objectStore(storeName);
+      db.onerror = (event) => reject(event.target.errorCode);
 
-      db.onerror = (error) => {
-        console.error(`idb error: ${error.message}`);
-      };
       switch (method) {
         case 'put': {
           store.put(object);
@@ -36,10 +29,11 @@ export default function idbPromise(storeName, method, object) {
         }
         case 'delete': {
           store.delete(object._id);
+          resolve();
           break;
         }
         default: {
-          console.error(`Unknown idbPromise method: "${method}"`);
+          reject(`Unknown method: "${method}"`);
           break;
         }
       }

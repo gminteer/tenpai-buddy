@@ -1,26 +1,38 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Redirect, Link} from 'react-router-dom';
 import {useQuery} from '@apollo/react-hooks';
+import {useSelector, useDispatch} from 'react-redux';
 
 import Auth from 'utils/auth';
 import {GET_MYACCOUNT} from 'utils/queries';
+import {update} from 'slices/me';
+import idbPromise from 'utils/idb';
 
 export default function Me() {
+  const me = useSelector((state) => state.me);
+  const dispatch = useDispatch();
   const {loading, data} = useQuery(GET_MYACCOUNT);
 
+  useEffect(() => {
+    if (data) {
+      idbPromise('me', 'put', data.myAccount);
+      dispatch(update(data.myAccount));
+    } else if (!loading) {
+      const me = idbPromise('me', 'get');
+      dispatch(update(me));
+    }
+  }, [data, loading, dispatch]);
   if (!Auth.isLoggedIn()) return <Redirect to="/" />;
 
   if (loading) return <div>Loading...</div>;
-  const {myAccount} = data;
-  const {profile} = myAccount;
   return (
     <main>
-      <h2>{myAccount.email}</h2>
-      {profile ? (
+      <h2>{me.email}</h2>
+      {me.profile ? (
         <div>
           <h3>Profile</h3>
           <h4>Username</h4>
-          <span>{profile.username}</span>
+          <span>{me.profile.username}</span>
           <Link to="/profile/edit">Edit Profile</Link>
         </div>
       ) : (

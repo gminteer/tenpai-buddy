@@ -6,6 +6,9 @@ const reducers = {
   addScore(state, {payload}) {
     state.push(payload);
   },
+  bulkUpdate(state, {payload}) {
+    return payload;
+  },
 };
 
 const slice = createSlice({
@@ -14,5 +17,5 @@ const slice = createSlice({
   reducers,
 });
 
-export const {addScore} = slice.actions;
+export const {addScore, bulkUpdate} = slice.actions;
 export default slice.reducer;
