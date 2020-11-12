@@ -31,7 +31,7 @@ export default function App() {
   return (
     <ReduxProvider store={store}>
       <ApolloProvider client={client}>
-        <Router basename={process.env.PUBLIC_URL}>
+        <Router>
           <Header pages={['game', 'highscores']} authService={authService} />
           <Suspense fallback={<div>Now loading...</div>}>
             <Switch>
