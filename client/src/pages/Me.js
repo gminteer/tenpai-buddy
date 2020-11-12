@@ -16,17 +16,15 @@ export default function Me() {
   const {loading, data} = useQuery(GET_MYACCOUNT);
 
   useEffect(() => {
-    async function getData() {
-      if (data) {
-        idbPromise('me', 'put', data.myAccount);
-        dispatch(update(data.myAccount));
-      } else if (!loading) {
-        const me = await idbPromise('me', 'get');
+    if (data) {
+      idbPromise('me', 'put', data.myAccount);
+      dispatch(update(data.myAccount));
+    } else if (!loading) {
+      idbPromise('me', 'get').then((me) => {
         console.log(me);
         dispatch(update(me));
-      }
+      });
     }
-    getData();
   }, [data, loading, dispatch]);
   if (!Auth.isLoggedIn()) return <Redirect to="/" />;
 
