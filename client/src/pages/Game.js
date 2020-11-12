@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {Redirect} from 'react-router-dom';
 import {useSelector, useDispatch} from 'react-redux';
 
 import {sortedCopy, byIndex} from 'utils/mahjong/helper';
@@ -62,10 +63,7 @@ export default function Game() {
     <main className={styles.Game}>
       {gameOver && (
         <GameOver
-          toggle={() => {
-            toggleGameOver();
-            // dispatch(reset());
-          }}
+          toggle={() => <Redirect to="/highscores" />}
           isTenpai={isTenpai}
           ukeire={game.ukeire}
           moveCount={game.moves.length}
