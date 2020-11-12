@@ -32,14 +32,18 @@ export default function GameOver({
           variables: {score: scoreVariables},
         });
         console.log(data);
-        idbPromise('scores', 'put', {...score, _id: data.addScore._id});
+        idbPromise('scores', 'put', {
+          ...score,
+          _id: data.addScore._id,
+          profile: me.profile,
+        });
       } catch (error) {
         console.error(error);
       }
     }
     dispatch(addScore(score));
     submitScore();
-  }, [addScoreMutation, dispatch, moveCount, ukeire, efficiency]);
+  }, [addScoreMutation, dispatch, moveCount, ukeire, efficiency, me.profile]);
 
   return (
     <Modal toggle={toggle} title="Game Over">
