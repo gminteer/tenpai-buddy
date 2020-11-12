@@ -23,7 +23,7 @@ export default function Login({toggle}) {
     try {
       const {data} = await login({variables: {...formState}});
       Auth.login(data.login.token);
-      window.location.assign('/profile');
+      window.location.assign('/me');
     } catch (error) {
       console.error(error);
     }

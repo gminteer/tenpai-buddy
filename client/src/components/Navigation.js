@@ -36,7 +36,7 @@ export default function Navigation({pages, authService}) {
         </ul>
         {isLoggedIn ? (
           <>
-            <Link to="/profile">Profile</Link>
+            <Link to="/me">My Account</Link>
             <button onClick={logOut}>Logout</button>
           </>
         ) : (

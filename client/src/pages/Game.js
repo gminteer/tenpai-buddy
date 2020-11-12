@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 
+import Auth from 'utils/auth';
 import {sortedCopy, byIndex} from 'utils/mahjong/helper';
 import {scoreMove} from 'utils/mahjong/score';
 import {discardTile, drawTile, reset} from 'slices/game';
@@ -11,7 +12,8 @@ import GameOver from 'components/modals/GameOver';
 
 import styles from './Game.module.scss';
 
-export default function Home() {
+export default function Game() {
+  console.log(Auth.decodedToken());
   const [gameOver, setGameOver] = useState(false);
   const [isTenpai, setIsTenpai] = useState(false);
   const toggleGameOver = () => setGameOver(!gameOver);
@@ -74,7 +76,7 @@ export default function Home() {
       <h2>Seen Tiles</h2>
       <div className={styles.seenTiles}>
         {seenTiles.map((tile, idx) => (
-          <div className={styles.tileCounter}>
+          <div className={styles.tileCounter} key={tile}>
             <Tile key={tile} id={idx} />
             {tile.length > 1 && <span>x{tile.length}</span>}
           </div>
@@ -100,8 +102,8 @@ export default function Home() {
         </div>
       </section>
       <h2>Moves</h2>
-      {moves.map((move) => (
-        <div className={styles.moves}>
+      {moves.map((move, idx) => (
+        <div className={styles.moves} key={idx}>
           <TileGroup tiles={sortedCopy(move.hand)} />
           <div className={styles.discard}>
             <Tile id={move.discard} />

@@ -11,9 +11,11 @@ import store from './slices';
 import Home from './pages/Home';
 import Header from './components/Header';
 
-const HighScores = React.lazy(() => import('./pages/HighScores'));
+const Me = React.lazy(() => import('./pages/Me'));
 const Profile = React.lazy(() => import('./pages/Profile'));
+const EditProfile = React.lazy(() => import('./pages/EditProfile'));
 const Game = React.lazy(() => import('./pages/Game'));
+const HighScores = React.lazy(() => import('./pages/HighScores'));
 
 const client = new ApolloClient({
   request(operation) {
@@ -36,14 +38,20 @@ export default function App() {
               <Route exact path="/">
                 <Home />
               </Route>
+              <Route exact path="/me">
+                <Me />
+              </Route>
+              <Route exact path="/profile/edit">
+                <EditProfile />
+              </Route>
+              <Route exact path="/profile/:username?">
+                <Profile />
+              </Route>
               <Route exact path="/game">
                 <Game />
               </Route>
               <Route exact path="/highscores">
                 <HighScores />
-              </Route>
-              <Route exact path="/profile/:username?">
-                <Profile />
               </Route>
               <Route fallback>
                 <div>Page not found!</div>

@@ -1,6 +1,6 @@
 const {AuthenticationError} = require('apollo-server-express');
 
-module.exports = ({Account, Profile}, signToken) => ({
+module.exports = ({Account, Profile, Score}, signToken) => ({
   Query: {
     async accounts() {
       return Account.find();
@@ -20,6 +20,11 @@ module.exports = ({Account, Profile}, signToken) => ({
 
     async profile(parent, {username}) {
       return Profile.findOne({username});
+    },
+
+    async scores(parent, {profile}) {
+      if (profile) return Score.find({profile}).populate('profile');
+      else return Score.find().populate('profile');
     },
   },
 
@@ -65,6 +70,14 @@ module.exports = ({Account, Profile}, signToken) => ({
       account.profile = null;
       await account.save();
       return {ok: true, message: 'Profile deleted'};
+    },
+
+    async addScore(parent, {score: scoreData}, context) {
+      if (!context.user) throw new AuthenticationError('Not logged in');
+      return Score.create({
+        ...scoreData,
+        profile: context.user.profile,
+      });
     },
   },
 });

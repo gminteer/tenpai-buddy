@@ -3,24 +3,26 @@ import {Redirect, useParams} from 'react-router-dom';
 import {useQuery} from '@apollo/react-hooks';
 
 import Auth from 'utils/auth';
-import QUERY from 'utils/queries';
+import {GET_PROFILE} from 'utils/queries';
 
 export default function Profile() {
   const {username: userParam} = useParams();
-  const {loading, data} = useQuery(
-    userParam ? QUERY.PROFILE : QUERY.MY_PROFILE,
-    {
-      variables: {username: userParam},
-    }
-  );
-  if (!userParam && !Auth.isLoggedIn()) return <Redirect to="/" />;
+  const {loading, data} = useQuery(GET_PROFILE, {
+    variables: {username: userParam},
+  });
+
+  if (!userParam)
+    if (Auth.isLoggedIn()) return <Redirect to="/me" />;
+    else return <Redirect to="/" />;
 
   if (loading) return <div>Loading...</div>;
-  const profile = data?.myProfile || data?.profile || {};
-  const isProfileOwner =
-    Auth.isLoggedIn() && Auth.decodedToken().data.profile === profile._id;
-  if (userParam && isProfileOwner) return <Redirect to="/profile" />;
+  const {profile} = data;
 
+  const isProfileOwner =
+    Auth.isLoggedIn() &&
+    profile?._id &&
+    Auth.decodedToken().data.profile === profile?._id;
+  if (userParam && isProfileOwner) return <Redirect to="/me" />;
   if (!profile?.username)
     return (
       <main>
@@ -31,6 +33,7 @@ export default function Profile() {
   return (
     <main>
       <h2>{profile.username}</h2>
+      <button>Edit Profile</button>
     </main>
   );
 }

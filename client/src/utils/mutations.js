@@ -7,6 +7,10 @@ export const LOGIN = gql`
       account {
         _id
         email
+        profile {
+          _id
+          username
+        }
       }
     }
   }
@@ -20,6 +24,15 @@ export const CREATE_ACCOUNT = gql`
         _id
         email
       }
+    }
+  }
+`;
+
+export const UPDATE_PROFILE = gql`
+  mutation updateProfile($profile: ProfileInput!) {
+    updateProfile(profile: $profile) {
+      _id
+      username
     }
   }
 `;

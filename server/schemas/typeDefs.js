@@ -12,6 +12,14 @@ module.exports = gql`
     profile: Profile
   }
 
+  type Score {
+    _id: ID
+    profile: Profile
+    efficiency: Int
+    ukeire: Int
+    moveCount: Int
+  }
+
   type Auth {
     token: ID!
     account: Account
@@ -27,11 +35,18 @@ module.exports = gql`
     username: String!
   }
 
+  input ScoreInput {
+    moveCount: Int!
+    efficiency: Int!
+    ukeire: Int!
+  }
+
   type Query {
     accounts: [Account]
     profile(username: String!): Profile
     myAccount: Account
     myProfile: Profile
+    scores(profile: ID): [Score]
   }
 
   type Mutation {
@@ -39,5 +54,6 @@ module.exports = gql`
     login(email: String!, password: String!): Auth
     updateProfile(profile: ProfileInput!): Profile
     deleteProfile: Response
+    addScore(score: ScoreInput!): Score
   }
 `;

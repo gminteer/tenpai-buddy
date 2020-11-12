@@ -14,12 +14,12 @@ export default function Signup({toggle}) {
   });
   const [createAccount, {error}] = useMutation(CREATE_ACCOUNT);
 
-  const handleChange = (event) => {
+  function handleChange(event) {
     const {name, value} = event.target;
     setFormState({...formState, [name]: value});
-  };
+  }
 
-  const handleSubmit = async (event) => {
+  async function handleSubmit(event) {
     event.preventDefault();
     // TODO -- handle this better
     if (formState.password !== formState.confirm) {
@@ -30,11 +30,11 @@ export default function Signup({toggle}) {
       const {confirm, ...variables} = formState;
       const {data} = await createAccount({variables});
       Auth.login(data.createAccount.token);
-      window.location.assign('/profile');
-    } catch (err) {
-      console.error(err);
+      window.location.assign('/me');
+    } catch (error) {
+      console.error(error);
     }
-  };
+  }
 
   return (
     <Modal toggle={toggle} title="Sign up">

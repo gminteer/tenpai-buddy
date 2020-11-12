@@ -1,4 +1,5 @@
 import {configureStore} from '@reduxjs/toolkit';
+
 import game from './game';
 import scores from './scores';
 

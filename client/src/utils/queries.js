@@ -1,34 +1,46 @@
 import gql from 'graphql-tag';
 
-const QUERY = {
-  MY_ACCOUNT: gql`
-    {
-      myAccount {
-        _id
-        email
-        profile {
-          _id
-          username
-        }
-      }
-    }
-  `,
-  MY_PROFILE: gql`
-    {
-      myProfile {
+export const GET_MYACCOUNT = gql`
+  {
+    myAccount {
+      _id
+      email
+      profile {
         _id
         username
       }
     }
-  `,
-  PROFILE: gql`
-    query profile($username: String!) {
-      profile(username: $username) {
-        _id
-        username
-      }
-    }
-  `,
-};
+  }
+`;
 
-export default QUERY;
+export const GET_MYPROFILE = gql`
+  {
+    myProfile {
+      _id
+      username
+    }
+  }
+`;
+
+export const GET_PROFILE = gql`
+  query profile($username: String!) {
+    profile(username: $username) {
+      _id
+      username
+    }
+  }
+`;
+
+export const GET_SCORES = gql`
+  {
+    scores {
+      _id
+      profile {
+        username
+      }
+      moveCount
+      efficiency
+      ukeire
+    }
+  }
+`;
