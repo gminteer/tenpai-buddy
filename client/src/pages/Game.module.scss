@@ -1,7 +1,33 @@
 .Game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h2 {
+    text-align: center;
+    padding: 0.25em;
+  }
+
+  header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .dora {
+    align-self: flex-end;
+    padding: 1em;
+  }
+
   .seenTiles {
     display: flex;
     flex-wrap: wrap;
+    width: 90%;
+    height: 35%;
+    overflow: auto;
+    align-items: flex-start;
+    justify-content: start;
 
     .tileCounter {
       display: flex;
@@ -10,13 +36,31 @@
     }
   }
 
-  .moves,
+  .moves {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    height: 30%;
+    overflow: auto;
+    justify-content: start;
+
+    .move {
+      display: flex;
+      align-items: center;
+    }
+  }
+
   .hand {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    padding: 2em;
 
-    .discard {
-      border: 2px solid red;
+    .tileSet {
+      display: flex;
+
+      .discard {
+        border: 2px solid red;
+      }
     }
 
     .drawn {

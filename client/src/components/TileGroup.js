@@ -7,9 +7,9 @@ import styles from './TileGroup.module.scss';
 export default function TileGroup({tiles, clickHandler}) {
   return (
     <div className={styles.TileGroup}>
-      {tiles.map((id) => (
+      {tiles.map((id, idx) => (
         <Tile
-          key={id}
+          key={idx}
           id={id}
           clickHandler={clickHandler ? () => clickHandler(id) : undefined}
         />
