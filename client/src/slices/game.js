@@ -26,8 +26,6 @@ function initialState() {
   seenTiles.push(...hand, drawnTile);
 
   const moves = [];
-  const shanten = null;
-  const ukeire = null;
   const efficiency = null;
 
   return {
@@ -38,22 +36,28 @@ function initialState() {
     drawnTile,
     seenTiles,
     moves,
-    shanten,
-    ukeire,
     efficiency,
   };
 }
 
+/**
+ * @typedef {Object} Move
+ * @property {number} discard - id of discarded tile
+ * @property {number} shanten - the shanten of the result
+ * @property {Array<number>} ukeireTiles - ukeire tile indexes
+ * @property {number} ukeireCount - count of live ukeire tiles
+ */
 const reducers = {
   discardTile(state, {payload}) {
-    const {discard, shanten, ukeire, efficiency} = payload;
+    // playerMove and idealMove are moves, don't know enough JSDoc to express it that way.
+    const {player, ideal, efficiency} = payload;
     // add drawn tile to hand if a different tile was discarded
-    if (discard !== state.drawnTile) {
-      state.hand = state.hand.filter((tile) => tile !== discard);
+    if (player.discard !== state.drawnTile) {
+      state.hand = state.hand.filter((tile) => tile !== player.discard);
       state.hand.push(state.drawnTile);
     }
-    state.shanten = shanten;
-    state.ukeire = ukeire;
+    state.player = player;
+    state.ideal = ideal;
     state.efficiency = state.efficiency
       ? Math.floor((state.efficiency + efficiency) / 2)
       : efficiency;

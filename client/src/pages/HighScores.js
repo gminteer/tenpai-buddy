@@ -30,10 +30,12 @@ export default function HighScores() {
       <h2>High Scores</h2>
       <table>
         <thead>
-          <th>User</th>
-          <th>Moves</th>
-          <th>Efficiency</th>
-          <th>Final ukeire</th>
+          <tr>
+            <th>User</th>
+            <th>Moves</th>
+            <th>Efficiency</th>
+            <th>Final ukeire</th>
+          </tr>
         </thead>
         <tbody>
           {scores.map((score) => (

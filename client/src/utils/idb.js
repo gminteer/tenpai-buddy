@@ -15,6 +15,7 @@ export default function idbPromise(storeName, method, object) {
       const tx = db.transaction(storeName, 'readwrite');
       const store = tx.objectStore(storeName);
       db.onerror = (event) => reject(event.target.errorCode);
+      tx.oncomplete = () => db.close();
 
       switch (method) {
         case 'put': {
@@ -37,7 +38,6 @@ export default function idbPromise(storeName, method, object) {
           break;
         }
       }
-      tx.oncomplete = () => db.close();
     };
   });
 }
