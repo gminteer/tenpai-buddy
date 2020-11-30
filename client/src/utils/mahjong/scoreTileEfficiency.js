@@ -96,7 +96,6 @@ function scoreChunkSet(chunkSet, liveTiles, findDiscard = false) {
   const pairs = matches.filter(
     (match) => match.length === 2 && match[0] % 40 === match[1] % 40
   );
-  console.log(pairs.length);
   if (findDiscard) {
     const matchedUkeireTiles = matches
       .filter((match) => pairs.length !== 1 || match !== pairs[0])
@@ -140,7 +139,7 @@ function scoreChunkSet(chunkSet, liveTiles, findDiscard = false) {
 function findBest(hand, liveTiles, findDrop = false) {
   const chunks = handChunker(hand);
   const target = Math.min(
-    5,
+    5, // complete hands have five matches (four triplets and a pair)
     chunks.reduce((a, b) => (a.matches.length > b.matches.length ? a : b))
       .matches.length
   );

@@ -49,7 +49,8 @@ function initialState() {
  */
 const reducers = {
   discardTile(state, {payload}) {
-    // playerMove and idealMove are moves, don't know enough JSDoc to express it that way.
+    // player and ideal are Moves, don't know enough JSDoc to express it that way.
+    // Ideally, I'm going to refactor this whole thing into TypeScript sooner or later
     const {player, ideal, efficiency} = payload;
     // add drawn tile to hand if a different tile was discarded
     if (player.discard !== state.drawnTile) {

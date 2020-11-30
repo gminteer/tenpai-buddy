@@ -33,7 +33,6 @@ export default function GameOver({
         const {data} = await addScoreMutation({
           variables: {score: scoreVariables},
         });
-        console.log(data);
         idbPromise('scores', 'put', {
           ...score,
           _id: data.addScore._id,

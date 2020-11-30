@@ -24,11 +24,13 @@ export default function Navigation({pages, authService}) {
       {showLoginForm && <Login toggle={toggleLoginForm} />}
       {showSignupForm && <Signup toggle={toggleSignupForm} />}
       <nav className={styles.Navigation}>
-        {pages.map((page, index) => (
-          <NavLink activeClassName={styles.selected} to={`/${page}`}>
-            {page}
-          </NavLink>
-        ))}
+        {pages
+          .filter((page) => page.navTitle)
+          .map(({navTitle, path}) => (
+            <NavLink key={path} activeClassName={styles.selected} to={path}>
+              {navTitle}
+            </NavLink>
+          ))}
         {isLoggedIn ? (
           <>
             <Link to="/me">My Account</Link>
