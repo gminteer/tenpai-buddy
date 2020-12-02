@@ -1,25 +1,19 @@
-const devDependencies =
-  Object.keys(require('./package.json').devDependencies) || {};
+// const devDependencies = Object.keys(require('./package.json').devDependencies) || {};
 
 module.exports = {
   env: {
     node: true,
-    es2017: true,
+    es2020: true,
   },
-  parserOptions: {
-    sourceType: 'module',
-    ecmaVersion: 2018,
-  },
-  plugins: ['prettier', 'promise', 'import', 'node', 'security'],
+  parser: '@typescript-eslint/parser',
+  plugins: ['prettier', 'promise', 'security', '@typescript-eslint'],
   extends: [
     'eslint:recommended',
     'plugin:promise/recommended',
-    'plugin:import/errors',
-    'plugin:import/warnings',
     'google',
-    'prettier',
-    'plugin:node/recommended',
     'plugin:security/recommended',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
   ],
   rules: {
     'brace-style': ['error', '1tbs', {allowSingleLine: true}],
@@ -32,23 +26,12 @@ module.exports = {
     'prettier/prettier': ['warn'],
     'require-jsdoc': ['off'],
     'vars-on-top': ['warn'],
-    'no-unused-vars': ['warn'],
+    'no-invalid-this': ['off'],
+    'no-unused-vars': ['off'],
     'security/detect-object-injection': ['off'],
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      {argsIgnorePattern: '^_*', ignoreRestSiblings: true},
+    ],
   },
-  overrides: [
-    {
-      files: ['__tests__/**', '**/__mocks__/**'],
-      env: {
-        'jest/globals': true,
-      },
-      plugins: ['jest'],
-      extends: ['plugin:jest/recommended', 'plugin:jest/style'],
-      rules: {
-        'node/no-unpublished-require': [
-          'error',
-          {allowModules: devDependencies},
-        ],
-      },
-    },
-  ],
 };
