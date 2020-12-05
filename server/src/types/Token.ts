@@ -1,4 +1,9 @@
+import {Request} from 'express';
+
 export interface Token {
   sub: string;
-  profile: string | null;
+}
+
+export interface RequestWithToken extends Request {
+  token: Token;
 }

@@ -2,9 +2,7 @@ import {Field, ID, Int, ObjectType} from 'type-graphql';
 import {getModelForClass, prop as Property, Ref} from '@typegoose/typegoose';
 
 import {Account} from './Account';
-import Container, {Service} from 'typedi';
 
-@Service('Profile')
 @ObjectType({description: 'Profile'})
 export class Profile {
   @Field(() => ID)
@@ -24,4 +22,3 @@ export class Profile {
 }
 
 export const ProfileModel = getModelForClass(Profile);
-Container.set('ProfileModel', ProfileModel);

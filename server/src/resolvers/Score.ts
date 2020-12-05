@@ -1,12 +1,10 @@
 import {DocumentType} from '@typegoose/typegoose';
 import {Arg, Ctx, Mutation, Query, Resolver} from 'type-graphql';
-import {Service} from 'typedi';
 import {AccountModel} from '../entities/Account';
 import {Score, ScoreModel} from '../entities/Score';
-import {RequestContext} from '../types/RequestContext';
+import {RequestContext} from '../contexts/RequestContext';
 import {ScoreInput} from './types/ScoreInput';
 
-@Service()
 @Resolver()
 export class ScoreResolver {
   @Query(() => [Score])
@@ -22,7 +20,7 @@ export class ScoreResolver {
     @Arg('data') data: ScoreInput,
     @Ctx() ctx: RequestContext
   ): Promise<DocumentType<Score>> {
-    let profile = null;
+    let profile = undefined;
     if (ctx.req.token) {
       const user = await AccountModel.findById(ctx.req.token.sub);
       if (!user) throw new Error('Valid JWT, but no account found?!');

@@ -1,9 +1,7 @@
 import {Field, Float, ID, Int, ObjectType} from 'type-graphql';
 import {getModelForClass, prop as Property, Ref} from '@typegoose/typegoose';
 import {Profile} from './Profile';
-import Container, {Service} from 'typedi';
 
-@Service('Score')
 @ObjectType({description: 'Score'})
 export class Score {
   @Field(() => ID)
@@ -27,4 +25,3 @@ export class Score {
 }
 
 export const ScoreModel = getModelForClass(Score);
-Container.set('ScoreModel', ScoreModel);

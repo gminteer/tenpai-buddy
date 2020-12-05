@@ -2,20 +2,19 @@ import {ApolloServer} from 'apollo-server-express';
 import express, {Application} from 'express';
 import path from 'path';
 import {buildSchema} from 'type-graphql';
-import Container from 'typedi';
 
 import {AccountResolver} from './resolvers/Account';
 import {ProfileResolver} from './resolvers/Profile';
 import {ScoreResolver} from './resolvers/Score';
-import {RequestWithToken} from './types/RequestContext';
-import {jwtMiddleware} from './utils/jwt';
+import {RequestWithToken} from './types/Token';
+import {authChecker, jwtMiddleware} from './utils/auth';
 
 const app = (async (): Promise<Application> => {
   const app = express();
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [AccountResolver, ProfileResolver, ScoreResolver],
-      container: Container,
+      authChecker,
     }),
     context: ({req}: {req: RequestWithToken}) => ({req}),
   });

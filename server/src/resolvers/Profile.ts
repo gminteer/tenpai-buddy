@@ -1,23 +1,13 @@
 import {DocumentType} from '@typegoose/typegoose';
-import {Arg, Ctx, Mutation, Query} from 'type-graphql';
+import {Arg, Authorized, Ctx, Mutation, Query} from 'type-graphql';
 
+import {RequestContext} from '../contexts/RequestContext';
 import {AccountModel} from '../entities/Account';
 import {GenericResponse} from '../entities/GenericResponse';
 import {Profile, ProfileModel} from '../entities/Profile';
-import {RequestContext} from '../types/RequestContext';
 import {ProfileInput} from './types/ProfileInput';
 
 export class ProfileResolver {
-  @Query(() => Profile, {nullable: true})
-  async myProfile(
-    @Ctx() ctx: RequestContext
-  ): Promise<DocumentType<Profile> | null> {
-    if (!ctx.req.token) return null;
-    const profile = await ProfileModel.findById(ctx.req.token.profile);
-    if (!profile) return null;
-    return profile;
-  }
-
   @Query(() => Profile, {nullable: true})
   async profile(
     @Arg('username') username: string
@@ -26,19 +16,34 @@ export class ProfileResolver {
     return profile ? profile : null;
   }
 
-  @Mutation(() => Profile, {nullable: true})
+  @Authorized()
+  @Query(() => Profile, {nullable: true})
+  async myProfile(
+    @Ctx() ctx: RequestContext
+  ): Promise<DocumentType<Profile> | null> {
+    const profile = await ProfileModel.findOne({account: ctx.req.token.sub});
+    return profile ? profile : null;
+  }
+
+  @Authorized()
+  @Mutation(() => Profile)
   async updateProfile(
     @Arg('data') data: ProfileInput,
     @Ctx() ctx: RequestContext
-  ): Promise<DocumentType<Profile> | null> {
-    if (!ctx.req.token) return null;
+  ): Promise<DocumentType<Profile>> {
     const account = await AccountModel.findById(ctx.req.token.sub);
     if (!account) throw new Error('Valid JWT, but no account found?!');
-    if (account.profile)
-      return ProfileModel.findByIdAndUpdate(account.profile, data, {new: true});
-    const profile = await ProfileModel.create({...data, account: account._id});
-    account.profile = profile._id;
-    await account.save();
+    let profile = null;
+    if (account.profile) {
+      profile = await ProfileModel.findByIdAndUpdate(account.profile, data, {
+        new: true,
+      });
+    }
+    if (!profile) {
+      profile = await ProfileModel.create({...data, account: account._id});
+      account.profile = profile._id;
+      await account.save();
+    }
     return profile;
   }
 

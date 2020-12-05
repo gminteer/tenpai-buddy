@@ -1,15 +1,13 @@
 import {DocumentType} from '@typegoose/typegoose';
 import {AuthenticationError} from 'apollo-server-express';
-import {Arg, Ctx, Mutation, Query, Resolver} from 'type-graphql';
-import {Service} from 'typedi';
+import {Arg, Authorized, Ctx, Mutation, Query, Resolver} from 'type-graphql';
 
+import {RequestContext} from '../contexts/RequestContext';
 import {AccountModel, Account} from '../entities/Account';
 import {Auth} from '../entities/Auth';
-import {RequestContext} from '../types/RequestContext';
+import {createJwt} from '../utils/auth';
 import {AuthInput} from './types/AuthInput';
-import {createJwt} from '../utils/jwt';
 
-@Service()
 @Resolver()
 export class AccountResolver {
   @Query(() => [Account])
@@ -17,13 +15,13 @@ export class AccountResolver {
     return AccountModel.find();
   }
 
+  @Authorized()
   @Query(() => Account, {nullable: true})
-  async myAccount(@Ctx() ctx: RequestContext): Promise<Account | null> {
-    if (!ctx.req.token) return null;
+  async myAccount(@Ctx() ctx: RequestContext): Promise<DocumentType<Account>> {
     const account = await AccountModel.findById(ctx.req.token.sub).populate(
       'profile'
     );
-    if (!account) return null;
+    if (!account) throw new Error('Valid JWT, but no account found?!');
     return account;
   }
 

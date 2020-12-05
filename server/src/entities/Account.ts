@@ -1,21 +1,19 @@
 import bcrypt from 'bcrypt';
 import {Field, ID, ObjectType} from 'type-graphql';
 import {
-  pre,
+  pre as PreHook,
   prop as Property,
   getModelForClass,
   DocumentType,
   Ref,
 } from '@typegoose/typegoose';
-import Container, {Service} from 'typedi';
 
 import {Profile} from './Profile';
 
 const SALT_ROUNDS = 10;
 
-@Service('Account')
 @ObjectType({description: 'Account'})
-@pre<Account>('save', async function (this: DocumentType<Account>, next) {
+@PreHook<Account>('save', async function (this: DocumentType<Account>, next) {
   if (this.isNew || this.isModified('password'))
     this.password = await bcrypt.hash(this.password, SALT_ROUNDS);
   next();
@@ -48,4 +46,3 @@ export class Account {
   }
 }
 export const AccountModel = getModelForClass(Account);
-Container.set('AccountModel', AccountModel);
